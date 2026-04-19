@@ -26,6 +26,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'phone' => ['required', 'string', 'max:32'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'accept_policies' => ['required', 'accepted'],
         ]);
 
         $user = User::query()->create([

@@ -28,7 +28,7 @@
     @php($byDate = $items->groupBy(fn ($i) => $i->scheduled_date->format('Y-m-d')))
     @forelse ($byDate as $date => $dayItems)
         <div class="mb-8">
-            <h3 class="font-serif text-lg text-zinc-800 dark:text-zinc-100">{{ \Carbon\Carbon::parse($date)->format('l, M j') }}</h3>
+            <h3 class="font-sans text-lg text-zinc-800 dark:text-zinc-100">{{ \Carbon\Carbon::parse($date)->format('l, M j') }}</h3>
             <div class="mt-4 space-y-4">
                 @foreach ($dayItems as $item)
                     @include('partials.timeline-item', ['item' => $item, 'role' => 'student'])

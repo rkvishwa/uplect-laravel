@@ -1,6 +1,10 @@
-<x-layouts.auth :title="__('Verify email')">
+<x-auth.split
+    :page-title="__('Verify email')"
+    :eyebrow="__('VERIFICATION')"
+    :heading="__('Check your inbox')"
+    :description="__('We sent a 6-digit code to :email. Please enter it below.', ['email' => $email])"
+>
     <div
-        class="rounded-2xl border border-zinc-200/80 bg-white/90 p-8 shadow-xl shadow-zinc-900/5 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80"
         x-data="{
             d: ['', '', '', '', '', ''],
             get code() { return this.d.join(''); },
@@ -23,21 +27,14 @@
             }
         }"
     >
-        <h2 class="font-serif text-2xl font-semibold text-zinc-900 dark:text-zinc-50">{{ __('Check your inbox') }}</h2>
-        <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            {{ __('We sent a 6-digit code to') }} <span class="font-medium text-zinc-900 dark:text-zinc-200">{{ $email }}</span>.
-        </p>
-
-        <x-flash class="mt-6" />
-
-        <form method="POST" action="{{ route('otp.verify') }}" class="mt-6 space-y-6">
+        <form method="POST" action="{{ route('otp.verify') }}" class="space-y-6">
             @csrf
             <input type="hidden" name="email" value="{{ $email }}">
             <input type="hidden" name="otp" x-bind:value="code">
 
             <div>
-                <p class="mb-3 text-center text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{{ __('Verification code') }}</p>
-                <div class="flex justify-center gap-2 sm:gap-3" @paste="onPaste($event)">
+                <p class="mb-3 text-[13px] font-semibold text-zinc-900">{{ __('Verification code') }}</p>
+                <div class="flex justify-between gap-2" @paste="onPaste($event)">
                     @foreach (range(0, 5) as $i)
                         <input
                             x-ref="b{{ $i }}"
@@ -45,7 +42,7 @@
                             inputmode="numeric"
                             maxlength="1"
                             autocomplete="one-time-code"
-                            class="h-12 w-10 rounded-xl border border-zinc-200 bg-white text-center font-mono text-lg font-semibold text-zinc-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20 sm:h-14 sm:w-12 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100"
+                            class="h-14 w-full rounded-xl border border-zinc-200 bg-white text-center font-mono text-xl font-semibold text-zinc-900 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                             x-model="d[{{ $i }}]"
                             @input="onInput({{ $i }}, $event)"
                             @keydown="onKeydown({{ $i }}, $event)"
@@ -53,25 +50,28 @@
                     @endforeach
                 </div>
                 @error('otp')
-                    <p class="mt-2 text-center text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                    <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <button type="submit" class="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-brand-700 to-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:from-brand-600 hover:to-brand-500">
+            <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-4 py-[14px] text-[14px] font-semibold text-white shadow-sm transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2">
                 {{ __('Verify & continue') }}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
             </button>
         </form>
 
         <form method="POST" action="{{ route('otp.resend') }}" class="mt-4">
             @csrf
             <input type="hidden" name="email" value="{{ $email }}">
-            <button type="submit" class="w-full text-center text-sm font-medium text-brand-700 hover:text-brand-600 dark:text-brand-300">
+            <button type="submit" class="w-full text-center text-[13px] font-medium text-brand-600 hover:text-brand-700">
                 {{ __('Resend code') }}
             </button>
         </form>
 
-        <p class="mt-6 text-center text-sm text-zinc-600 dark:text-zinc-400">
-            <a href="{{ route('login') }}" class="font-semibold text-brand-700 hover:text-brand-600 dark:text-brand-300">{{ __('Back to sign in') }}</a>
+        <p class="mt-8 text-center text-[12px] text-zinc-500">
+            <a href="{{ route('login') }}" class="font-semibold text-brand-600 hover:text-brand-700">{{ __('Back to sign in') }}</a>
         </p>
     </div>
-</x-layouts.auth>
+</x-auth.split>

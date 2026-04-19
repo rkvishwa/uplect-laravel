@@ -10,7 +10,9 @@
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-serif: 'DM Serif Display', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    /* Alias: no serif faces in the UI */
+    --font-serif: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
 
     --color-brand-50: oklch(0.97 0.02 270);
     --color-brand-100: oklch(0.93 0.04 270);
@@ -30,5 +32,16 @@
 @layer base {
     html {
         @apply antialiased;
+    }
+}
+
+@layer utilities {
+    /* Hide scrollbar but keep scroll (auth left column, etc.) */
+    .scrollbar-none {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
     }
 }

@@ -5,7 +5,7 @@
 
     <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div>
-            <p class="font-serif text-xl text-zinc-900 dark:text-zinc-50">{{ __('Courses') }}</p>
+            <p class="font-sans text-xl text-zinc-900 dark:text-zinc-50">{{ __('Courses') }}</p>
             <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('Manage courses, timeline, and Zoom sessions.') }}</p>
         </div>
         <a href="{{ route('admin.courses.create') }}" class="inline-flex rounded-xl bg-gradient-to-r from-brand-700 to-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-600/20">{{ __('Add course') }}</a>

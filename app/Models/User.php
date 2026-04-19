@@ -12,9 +12,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPasswordMail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'role'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'role', 'avatar_path'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmailContract
 {
@@ -51,6 +53,15 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function isStudent(): bool
     {
         return $this->role === self::ROLE_STUDENT;
+    }
+
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::get(function (): ?string {
+            return $this->avatar_path
+                ? Storage::disk('public')->url($this->avatar_path)
+                : null;
+        });
     }
 
     /**

@@ -3,7 +3,7 @@
         <x-student.sidebar active="enrollments" />
     </x-slot:sidebarNav>
 
-    <p class="font-serif text-xl">{{ $course->title }}</p>
+    <p class="font-sans text-xl">{{ $course->title }}</p>
     <p class="mt-2 text-sm text-zinc-600">{{ __('Choose how you want to pay.') }}</p>
 
     <div class="mt-8 grid gap-8 lg:grid-cols-2">

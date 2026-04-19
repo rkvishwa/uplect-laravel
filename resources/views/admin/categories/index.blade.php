@@ -5,7 +5,7 @@
 
     <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div>
-            <p class="font-serif text-xl text-zinc-900 dark:text-zinc-50">{{ __('Categories') }}</p>
+            <p class="font-sans text-xl text-zinc-900 dark:text-zinc-50">{{ __('Categories') }}</p>
             <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('Create and manage course categories.') }}</p>
         </div>
         <a

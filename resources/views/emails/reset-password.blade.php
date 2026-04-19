@@ -12,7 +12,7 @@
                 <table role="presentation" width="100%" style="max-width:480px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(15,23,42,0.08);">
                     <tr>
                         <td style="padding:32px 32px 8px;text-align:center;">
-                            <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-weight:700;font-size:22px;font-family:Georgia,serif;">U</div>
+                            <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;font-weight:700;font-size:22px;font-family:Inter,system-ui,sans-serif;">U</div>
                             <h1 style="margin:20px 0 8px;font-size:22px;color:#18181b;">Reset your password</h1>
                             <p style="margin:0;font-size:15px;line-height:1.6;color:#52525b;">Hi {{ $user->name }}, we received a request to reset your Uplect password. Click the button below to choose a new one.</p>
                         </td>

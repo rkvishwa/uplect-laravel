@@ -6,7 +6,7 @@
     <div x-data="{ open: false }" @keydown.escape.window="open = false" class="space-y-8">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div>
-            <p class="font-serif text-xl text-zinc-900 dark:text-zinc-50">{{ __('Lecturer accounts') }}</p>
+            <p class="font-sans text-xl text-zinc-900 dark:text-zinc-50">{{ __('Lecturer accounts') }}</p>
             <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('Create and remove lecturer logins. Only admins can manage lecturers.') }}</p>
         </div>
         <button
@@ -67,7 +67,7 @@
             @click.self="open = false"
         >
             <div class="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-700 dark:bg-zinc-900" @click.stop>
-                <h3 class="font-serif text-lg font-semibold text-zinc-900 dark:text-zinc-50">{{ __('New lecturer') }}</h3>
+                <h3 class="font-sans text-lg font-semibold text-zinc-900 dark:text-zinc-50">{{ __('New lecturer') }}</h3>
                 <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('They can sign in immediately — email is pre-verified.') }}</p>
 
                 <form method="POST" action="{{ route('admin.lecturers.store') }}" class="mt-6 space-y-4">

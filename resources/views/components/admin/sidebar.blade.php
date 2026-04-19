@@ -47,3 +47,11 @@
         'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800' => $active !== 'lecturers',
     ])
 >{{ __('Lecturers') }}</a>
+<a
+    href="{{ route('admin.profile.edit') }}"
+    @class([
+        'rounded-lg px-3 py-2 transition',
+        'bg-brand-50 font-semibold text-brand-800 dark:bg-brand-950/40 dark:text-brand-200' => $active === 'profile',
+        'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800' => $active !== 'profile',
+    ])
+>{{ __('Profile') }}</a>

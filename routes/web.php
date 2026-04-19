@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\CourseTimelineController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController;
 use App\Http\Controllers\Admin\LecturerController;
 use App\Http\Controllers\Admin\TimelineItemController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Lecturer\LecturerAssignmentController;
 use App\Http\Controllers\Lecturer\LecturerCourseController;
 use App\Http\Controllers\Lecturer\LecturerTimelineController;
 use App\Http\Controllers\Lecturer\ZoomStartController;
+use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Payment\PayHereController;
 use App\Http\Controllers\Student\CatalogController;
 use App\Http\Controllers\Student\CourseDetailController;
@@ -29,9 +31,10 @@ use App\Http\Controllers\Student\StudentEnrollmentController;
 use App\Http\Controllers\Student\TimelineController as StudentTimelineController;
 use App\Http\Controllers\Student\ZoomJoinController;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->get('/email/verify', function (\Illuminate\Http\Request $request) {
+Route::middleware('auth')->get('/email/verify', function (Request $request) {
     $user = $request->user();
 
     if ($user === null) {
@@ -48,6 +51,10 @@ Route::middleware('auth')->get('/email/verify', function (\Illuminate\Http\Reque
 
     return redirect()->route('otp.show', ['email' => $user->email]);
 })->name('verification.notice');
+
+Route::get('/terms-and-conditions', [LegalController::class, 'terms'])->name('legal.terms');
+Route::get('/privacy-policy', [LegalController::class, 'privacy'])->name('legal.privacy');
+Route::get('/return-policy', [LegalController::class, 'returns'])->name('legal.returns');
 
 Route::middleware('guest')->group(function () {
     Route::get('/', [LoginController::class, 'show'])->name('login');
@@ -80,6 +87,11 @@ Route::middleware('auth')->get('/payment/payhere/return', [PayHereController::cl
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:'.User::ROLE_ADMIN, 'admin.data'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('profile', [AdminProfileController::class, 'update'])->name('profile.update');
+        Route::patch('profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password');
+        Route::delete('profile/avatar', [AdminProfileController::class, 'destroyAvatar'])->name('profile.avatar.destroy');
 
         Route::resource('categories', CategoryController::class)->except(['show']);
         Route::post('categories/{category}/activate', [CategoryController::class, 'activate'])->name('categories.activate');

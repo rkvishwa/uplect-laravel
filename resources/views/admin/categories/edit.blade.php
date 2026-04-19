@@ -4,7 +4,7 @@
     </x-slot:sidebarNav>
 
     <div class="mx-auto max-w-xl">
-        <p class="font-serif text-xl text-zinc-900 dark:text-zinc-50">{{ __('Edit category') }}</p>
+        <p class="font-sans text-xl text-zinc-900 dark:text-zinc-50">{{ __('Edit category') }}</p>
         <form method="POST" action="{{ route('admin.categories.update', $category) }}" class="mt-8 space-y-6 rounded-2xl border border-zinc-200/80 bg-white/90 p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/70">
             @csrf
             @method('PUT')

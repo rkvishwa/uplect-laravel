@@ -5,7 +5,7 @@
 
     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-            <p class="font-serif text-xl text-zinc-900 dark:text-zinc-50">{{ __('Timeline') }}: {{ $course->title }}</p>
+            <p class="font-sans text-xl text-zinc-900 dark:text-zinc-50">{{ __('Timeline') }}: {{ $course->title }}</p>
             <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('Drag cards to reorder. Add sessions, assignments, or certificate milestones.') }}</p>
         </div>
         <a href="{{ route('admin.courses.edit', $course) }}" class="text-sm font-medium text-brand-700 dark:text-brand-400">{{ __('Edit course') }}</a>
@@ -87,7 +87,7 @@
 
     @foreach ($grouped as $date => $items)
         <div class="mt-10">
-            <h3 class="font-serif text-lg text-zinc-800 dark:text-zinc-100">{{ \Carbon\Carbon::parse($date)->format('l, M j, Y') }}</h3>
+            <h3 class="font-sans text-lg text-zinc-800 dark:text-zinc-100">{{ \Carbon\Carbon::parse($date)->format('l, M j, Y') }}</h3>
             <div class="sortable-list mt-4 space-y-4" id="sort-{{ $date }}" data-date="{{ $date }}">
                 @foreach ($items as $item)
                     <div data-id="{{ $item->id }}" class="rounded-2xl border border-zinc-200/80 bg-white/90 p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/70">

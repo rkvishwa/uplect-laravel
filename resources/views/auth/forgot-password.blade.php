@@ -1,27 +1,30 @@
-<x-layouts.auth :title="__('Forgot password')">
-    <div class="rounded-2xl border border-zinc-200/80 bg-white/90 p-8 shadow-xl shadow-zinc-900/5 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80">
-        <h2 class="font-serif text-2xl font-semibold text-zinc-900 dark:text-zinc-50">{{ __('Reset link') }}</h2>
-        <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ __('Enter your email and we’ll send a link to choose a new password.') }}</p>
+<x-auth.split
+    :page-title="__('Forgot password')"
+    :eyebrow="__('RECOVERY')"
+    :heading="__('Reset link')"
+    :description="__('Enter your email and we’ll send a link to choose a new password.')"
+>
+    <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
+        @csrf
 
-        <x-flash class="mt-6" />
+        <div>
+            <label for="email" class="mb-1.5 block text-[13px] font-semibold text-zinc-900">{{ __('Email address') }}</label>
+            <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="username" placeholder="Enter your email address"
+                class="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-[14px] text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+            @error('email')
+                <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
 
-        <form method="POST" action="{{ route('password.email') }}" class="mt-6 space-y-5">
-            @csrf
-            <div>
-                <label for="email" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300">{{ __('Email') }}</label>
-                <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="username"
-                    class="mt-1.5 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-zinc-900 shadow-sm outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100">
-                @error('email')
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                @enderror
-            </div>
-            <button type="submit" class="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-brand-700 to-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:from-brand-600 hover:to-brand-500">
-                {{ __('Email reset link') }}
-            </button>
-        </form>
+        <button type="submit" class="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-4 py-[14px] text-[14px] font-semibold text-white shadow-sm transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2">
+            {{ __('Email reset link') }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+        </button>
+    </form>
 
-        <p class="mt-6 text-center text-sm text-zinc-600 dark:text-zinc-400">
-            <a href="{{ route('login') }}" class="font-semibold text-brand-700 hover:text-brand-600 dark:text-brand-300">{{ __('Back to sign in') }}</a>
-        </p>
-    </div>
-</x-layouts.auth>
+    <p class="mt-8 text-center text-[12px] text-zinc-500">
+        <a href="{{ route('login') }}" class="font-semibold text-brand-600 hover:text-brand-700">{{ __('Back to sign in') }}</a>
+    </p>
+</x-auth.split>

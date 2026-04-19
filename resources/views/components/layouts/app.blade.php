@@ -3,6 +3,15 @@
     'title' => null,
 ])
 
+@php
+    $roleEyebrow = match (auth()->user()->role ?? '') {
+        \App\Models\User::ROLE_ADMIN => __('Admin'),
+        \App\Models\User::ROLE_LECTURER => __('Lecturer'),
+        \App\Models\User::ROLE_STUDENT => __('Student'),
+        default => config('app.name'),
+    };
+@endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 <head>
@@ -12,7 +21,7 @@
     <title>{{ $title ?? $header }} — {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script>
         try {
@@ -25,8 +34,8 @@
     <style>[x-cloak]{display:none!important}</style>
 </head>
 <body class="min-h-full bg-zinc-100 text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100">
-    <div class="flex min-h-screen">
-        <aside class="hidden w-64 flex-col border-r border-zinc-200/80 bg-white/90 py-6 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/90 lg:flex">
+    <div class="min-h-screen">
+        <aside class="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col overflow-y-auto border-r border-zinc-200/80 bg-white/90 py-6 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/90 lg:flex">
             <div class="px-6">
                 <x-logo class="scale-90" />
             </div>
@@ -39,15 +48,35 @@
             </div>
         </aside>
 
-        <div class="flex min-h-screen flex-1 flex-col">
-            <header class="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-zinc-200/80 bg-white/80 px-4 py-3 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80 lg:px-8">
-                <div class="flex items-center gap-3 lg:hidden">
-                    <x-logo class="scale-75" />
+        <div class="flex min-h-screen flex-col lg:pl-64">
+            <header class="sticky top-0 z-30 flex w-full items-center justify-between gap-4 border-b border-zinc-200/80 bg-white/90 px-4 py-3.5 shadow-[0_1px_0_0_rgba(15,23,42,0.04)] backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90 dark:shadow-[0_1px_0_0_rgba(0,0,0,0.35)] lg:px-8">
+                {{-- Mobile: mark + page title --}}
+                <div class="flex min-w-0 flex-1 items-stretch gap-3 lg:hidden">
+                    <x-logo variant="mark" class="shrink-0 self-center" />
+                    <div class="flex min-w-0 flex-1 flex-col justify-center border-l border-zinc-200/90 pl-3 dark:border-zinc-700/90">
+                        <p class="truncate text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-700 dark:text-brand-300">
+                            {{ $roleEyebrow }}
+                        </p>
+                        <p class="mt-0.5 truncate text-[15px] font-semibold leading-snug tracking-tight text-zinc-900 dark:text-zinc-50">
+                            {{ $header }}
+                        </p>
+                    </div>
                 </div>
-                <h1 class="hidden font-serif text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 lg:block">
-                    {{ $header }}
-                </h1>
-                <div class="ml-auto flex items-center gap-2">
+
+                {{-- Desktop: accent + title --}}
+                <div class="hidden min-w-0 flex-1 items-center gap-4 lg:flex">
+                    <span class="h-10 w-1 shrink-0 rounded-full bg-gradient-to-b from-brand-500 via-brand-600 to-brand-700 shadow-sm dark:from-brand-400 dark:via-brand-500 dark:to-brand-600" aria-hidden="true"></span>
+                    <div class="min-w-0 py-0.5">
+                        <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-300">
+                            {{ $roleEyebrow }}
+                        </p>
+                        <h1 class="mt-0.5 truncate text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+                            {{ $header }}
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="flex shrink-0 items-center gap-2">
                     <x-theme-toggle />
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

@@ -4,7 +4,7 @@
     </x-slot:sidebarNav>
 
     <div class="mx-auto max-w-2xl">
-        <p class="font-serif text-xl text-zinc-900 dark:text-zinc-50">{{ __('New course') }}</p>
+        <p class="font-sans text-xl text-zinc-900 dark:text-zinc-50">{{ __('New course') }}</p>
         <form method="POST" action="{{ route('admin.courses.store') }}" enctype="multipart/form-data" class="mt-8 space-y-6 rounded-2xl border border-zinc-200/80 bg-white/90 p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/70">
             @csrf
             <div class="grid gap-6 sm:grid-cols-2">

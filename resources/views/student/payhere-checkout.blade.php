@@ -68,7 +68,7 @@
     </x-slot:scripts>
 
     <div class="mx-auto max-w-lg rounded-2xl border border-zinc-200/80 bg-white/90 p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/70">
-        <p class="font-serif text-xl text-zinc-900 dark:text-zinc-50">{{ __('Complete payment') }}</p>
+        <p class="font-sans text-xl text-zinc-900 dark:text-zinc-50">{{ __('Complete payment') }}</p>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
             {{ __('Course') }}: <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $enrollment->course->title }}</span>
         </p>
