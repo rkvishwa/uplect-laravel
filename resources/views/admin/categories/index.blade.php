@@ -63,7 +63,13 @@
                                     
                                     <span class="text-zinc-300 dark:text-zinc-700">|</span>
                                     
-                                    <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" onsubmit="return confirm(@js(__('Are you sure you want to delete this category?')));">
+                                    <form
+                                        method="POST"
+                                        action="{{ route('admin.categories.destroy', $category) }}"
+                                        data-confirm="{{ __('Are you sure you want to delete this category?') }}"
+                                        data-confirm-ok="{{ __('Delete') }}"
+                                        data-confirm-cancel="{{ __('Cancel') }}"
+                                    >
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="font-medium text-red-600 transition hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">{{ __('Delete') }}</button>

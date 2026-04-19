@@ -10,12 +10,14 @@ use App\Http\Requests\Admin\UpdateTimelineMetaRequest;
 use App\Http\Requests\Admin\UpdateTimelineTimeRequest;
 use App\Models\CourseSession;
 use App\Models\TimelineItem;
+use App\Models\ZoomAccount;
 use App\Models\ZoomMeeting;
 use App\Services\TimelineService;
 use App\Services\ZoomService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TimelineItemController extends Controller
 {
@@ -94,9 +96,19 @@ class TimelineItemController extends Controller
             return back()->with('warning', __('Set start and end time before creating a Zoom link.'));
         }
 
+        $validated = $request->validate([
+            'zoom_account_id' => [
+                'required',
+                'integer',
+                Rule::exists('zoom_accounts', 'id')->where('is_active', true),
+            ],
+        ]);
+
+        $account = ZoomAccount::query()->active()->findOrFail((int) $validated['zoom_account_id']);
+
         try {
             $lecturerEmail = $timelineItem->course->lecturer?->email;
-            $created = $zoom->createMeeting(
+            $created = $zoom->forAccount($account)->createMeeting(
                 $session,
                 $timelineItem->scheduled_date->format('Y-m-d'),
                 substr((string) $start, 0, 5),
@@ -106,6 +118,7 @@ class TimelineItemController extends Controller
 
             ZoomMeeting::query()->create([
                 'course_session_id' => $session->id,
+                'zoom_account_id' => $account->id,
                 'zoom_meeting_id' => $created['zoom_meeting_id'],
                 'topic' => $session->title,
                 'start_at' => Carbon::parse($created['start_time']),
@@ -146,7 +159,9 @@ class TimelineItemController extends Controller
         }
 
         try {
-            $zoom->deleteMeeting($zm->zoom_meeting_id);
+            if ($zm->zoomAccount) {
+                $zoom->forAccount($zm->zoomAccount)->deleteMeeting($zm->zoom_meeting_id);
+            }
         } catch (\Throwable) {
             // continue local delete
         }

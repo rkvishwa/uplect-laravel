@@ -43,8 +43,13 @@ class ZoomJoinController extends Controller
             return redirect()->away($existing->join_url);
         }
 
+        $account = $meeting->zoomAccount;
+        if (! $account) {
+            abort(503, __('This meeting is missing Zoom account configuration.'));
+        }
+
         try {
-            $created = $zoom->addRegistrant($meeting->zoom_meeting_id, $student);
+            $created = $zoom->forAccount($account)->addRegistrant($meeting->zoom_meeting_id, $student);
             $registrant = ZoomMeetingRegistrant::query()->create([
                 'meeting_id' => $meeting->id,
                 'student_id' => $student->id,

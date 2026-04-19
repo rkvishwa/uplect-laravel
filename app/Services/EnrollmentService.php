@@ -70,14 +70,14 @@ class EnrollmentService
         ]);
     }
 
-    public function decline(Enrollment $enrollment, User $admin, string $reason): void
+    public function decline(Enrollment $enrollment, User $admin): void
     {
         $enrollment->update([
             'status' => Enrollment::STATUS_DECLINED,
             'payment_status' => Enrollment::PAYMENT_DECLINED,
             'reviewed_by' => $admin->id,
             'reviewed_at' => now(),
-            'decline_reason' => $reason,
+            'decline_reason' => null,
         ]);
     }
 

@@ -138,10 +138,17 @@
                                     </form>
                                 </div>
                                 @if ($item->status !== \App\Models\TimelineItem::STATUS_CANCELLED)
-                                    <form method="POST" action="{{ route('admin.timeline-items.cancel', $item) }}" class="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+                                    <form
+                                        method="POST"
+                                        action="{{ route('admin.timeline-items.cancel', $item) }}"
+                                        class="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center"
+                                        data-confirm="{{ __('Cancel this session?') }}"
+                                        data-confirm-ok="{{ __('Cancel session') }}"
+                                        data-confirm-cancel="{{ __('Keep session') }}"
+                                    >
                                         @csrf
                                         <input type="text" name="cancellation_reason" placeholder="{{ __('Cancellation reason') }}" class="flex-1 rounded-lg border border-zinc-200 px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950" />
-                                        <button class="text-xs font-medium text-red-600" onclick="return confirm(@js(__('Cancel this session?')))">{{ __('Cancel session') }}</button>
+                                        <button type="submit" class="text-xs font-medium text-red-600">{{ __('Cancel session') }}</button>
                                     </form>
                                 @endif
                                 <form method="POST" action="{{ route('admin.timeline-items.recording', $item) }}" class="mt-2 flex gap-2">
@@ -156,23 +163,41 @@
                                         <p class="text-xs text-zinc-500">{{ $zm->topic }} · {{ $zm->start_at }}</p>
                                         <div class="mt-2 flex flex-wrap gap-2">
                                             <a href="{{ route('admin.timeline-items.zoom.host', $item) }}" target="_blank" class="text-xs font-semibold text-brand-700">{{ __('Open host link') }}</a>
-                                            <form method="POST" action="{{ route('admin.timeline-items.zoom.destroy', $item) }}" onsubmit="return confirm(@js(__('Delete Zoom link?')))">
+                                            <form
+                                                method="POST"
+                                                action="{{ route('admin.timeline-items.zoom.destroy', $item) }}"
+                                                data-confirm="{{ __('Delete Zoom link?') }}"
+                                                data-confirm-ok="{{ __('Delete') }}"
+                                                data-confirm-cancel="{{ __('Cancel') }}"
+                                            >
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="text-xs text-red-600">{{ __('Delete Zoom link') }}</button>
+                                                <button type="submit" class="text-xs text-red-600">{{ __('Delete Zoom link') }}</button>
                                             </form>
                                         </div>
                                     @else
                                         @php($past = $item->scheduled_date->lt(now()->startOfDay()))
-                                        <form method="POST" action="{{ route('admin.timeline-items.zoom.store', $item) }}">
-                                            @csrf
-                                            <button type="submit" @disabled($past) @class(['rounded-lg px-3 py-1 text-xs font-semibold text-white', 'bg-brand-600' => ! $past, 'cursor-not-allowed bg-zinc-400' => $past])>
-                                                {{ __('Create Zoom link') }}
-                                            </button>
-                                            @if ($past)
-                                                <span class="ml-2 text-xs text-zinc-500">{{ __('Date has passed') }}</span>
-                                            @endif
-                                        </form>
+                                        @php($defaultZoomId = old('zoom_account_id', $zoomAccounts->firstWhere('is_default')?->id ?? $zoomAccounts->first()?->id))
+                                        @if ($zoomAccounts->isEmpty())
+                                            <p class="text-xs text-zinc-600 dark:text-zinc-400">{{ __('Add a Zoom account first to create meeting links.') }}</p>
+                                            <a href="{{ route('admin.settings.zoom-accounts.create') }}" class="mt-1 inline-block text-xs font-semibold text-brand-700 hover:text-brand-600">{{ __('Add Zoom account in Settings') }} →</a>
+                                        @else
+                                            <form method="POST" action="{{ route('admin.timeline-items.zoom.store', $item) }}" class="flex flex-wrap items-center gap-2">
+                                                @csrf
+                                                <label class="sr-only" for="zoom_account_id_{{ $item->id }}">{{ __('Zoom account') }}</label>
+                                                <select id="zoom_account_id_{{ $item->id }}" name="zoom_account_id" required @disabled($past) class="max-w-[14rem] rounded-lg border border-zinc-200 px-2 py-1 text-xs dark:border-zinc-700 dark:bg-zinc-950">
+                                                    @foreach ($zoomAccounts as $zacc)
+                                                        <option value="{{ $zacc->id }}" @selected((string) $defaultZoomId === (string) $zacc->id)>{{ $zacc->name }}@if ($zacc->is_default) ({{ __('default') }}) @endif</option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="submit" @disabled($past) @class(['rounded-lg px-3 py-1 text-xs font-semibold text-white', 'bg-brand-600' => ! $past, 'cursor-not-allowed bg-zinc-400' => $past])>
+                                                    {{ __('Create Zoom link') }}
+                                                </button>
+                                                @if ($past)
+                                                    <span class="text-xs text-zinc-500">{{ __('Date has passed') }}</span>
+                                                @endif
+                                            </form>
+                                        @endif
                                     @endif
                                 </div>
                             </div>

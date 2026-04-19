@@ -80,7 +80,14 @@
                 <a href="{{ route('admin.courses.timeline.index', $course) }}" class="rounded-xl border border-zinc-200 px-5 py-2.5 text-sm font-medium dark:border-zinc-700">{{ __('Timeline') }}</a>
             </div>
         </form>
-        <form method="POST" action="{{ route('admin.courses.destroy', $course) }}" class="mt-4" onsubmit="return confirm(@js(__('Delete this course?')));">
+        <form
+            method="POST"
+            action="{{ route('admin.courses.destroy', $course) }}"
+            class="mt-4"
+            data-confirm="{{ __('Delete this course?') }}"
+            data-confirm-ok="{{ __('Delete') }}"
+            data-confirm-cancel="{{ __('Cancel') }}"
+        >
             @csrf
             @method('DELETE')
             <button type="submit" class="rounded-xl border border-red-200 px-5 py-2.5 text-sm font-medium text-red-600 dark:border-red-900">{{ __('Delete course') }}</button>

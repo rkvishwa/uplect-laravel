@@ -53,7 +53,7 @@ class Phase2Test extends TestCase
             'status' => Enrollment::STATUS_PENDING,
         ]);
 
-        $response = $this->actingAs($admin)->post(route('admin.enrollments.approve', $enrollment));
+        $response = $this->actingAs($admin)->post(route('admin.payments.approve', $enrollment));
 
         $response->assertSessionHasNoErrors();
         $enrollment->refresh();

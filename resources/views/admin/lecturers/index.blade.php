@@ -47,7 +47,13 @@
                                     <p class="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{{ $lecturer->phone ?? __('No phone provided') }}</p>
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <form method="POST" action="{{ route('admin.lecturers.destroy', $lecturer) }}" onsubmit="return confirm(@js(__('Remove this lecturer? They will no longer be able to sign in.')));">
+                                    <form
+                                        method="POST"
+                                        action="{{ route('admin.lecturers.destroy', $lecturer) }}"
+                                        data-confirm="{{ __('Remove this lecturer? They will no longer be able to sign in.') }}"
+                                        data-confirm-ok="{{ __('Remove') }}"
+                                        data-confirm-cancel="{{ __('Cancel') }}"
+                                    >
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10">

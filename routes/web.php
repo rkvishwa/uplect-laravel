@@ -4,10 +4,12 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\CourseTimelineController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController;
 use App\Http\Controllers\Admin\LecturerController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TimelineItemController;
+use App\Http\Controllers\Admin\ZoomAccountController;
 use App\Http\Controllers\Admin\ZoomHostRedirectController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
@@ -113,14 +115,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('timeline-items/{timelineItem}/zoom', [TimelineItemController::class, 'zoomDestroy'])->name('timeline-items.zoom.destroy');
         Route::get('timeline-items/{timelineItem}/zoom/host', ZoomHostRedirectController::class)->name('timeline-items.zoom.host');
 
-        Route::get('enrollments', [AdminEnrollmentController::class, 'index'])->name('enrollments.index');
-        Route::post('enrollments/{enrollment}/approve', [AdminEnrollmentController::class, 'approve'])->name('enrollments.approve');
-        Route::post('enrollments/{enrollment}/decline', [AdminEnrollmentController::class, 'decline'])->name('enrollments.decline');
-        Route::get('enrollments/{enrollment}/slip', [AdminEnrollmentController::class, 'downloadSlip'])->name('enrollments.slip');
+        Route::get('payments', [AdminEnrollmentController::class, 'index'])->name('payments.index');
+        Route::post('payments/{enrollment}/approve', [AdminEnrollmentController::class, 'approve'])->name('payments.approve');
+        Route::post('payments/{enrollment}/decline', [AdminEnrollmentController::class, 'decline'])->name('payments.decline');
+        Route::get('payments/{enrollment}/slip', [AdminEnrollmentController::class, 'downloadSlip'])->name('payments.slip');
 
         Route::get('/lecturers', [LecturerController::class, 'index'])->name('lecturers.index');
         Route::post('/lecturers', [LecturerController::class, 'store'])->name('lecturers.store');
         Route::delete('/lecturers/{user}', [LecturerController::class, 'destroy'])->name('lecturers.destroy');
+
+        Route::prefix('settings')->name('settings.')->group(function () {
+            Route::get('/', [SettingsController::class, 'index'])->name('index');
+            Route::get('/general', [SettingsController::class, 'general'])->name('general');
+            Route::resource('zoom-accounts', ZoomAccountController::class)->except(['show']);
+            Route::post('zoom-accounts/{zoom_account}/default', [ZoomAccountController::class, 'makeDefault'])->name('zoom-accounts.default');
+            Route::post('zoom-accounts/{zoom_account}/activate', [ZoomAccountController::class, 'activate'])->name('zoom-accounts.activate');
+            Route::post('zoom-accounts/{zoom_account}/deactivate', [ZoomAccountController::class, 'deactivate'])->name('zoom-accounts.deactivate');
+        });
     });
 
     Route::middleware('role:'.User::ROLE_LECTURER)->prefix('lecturer')->name('lecturer.')->group(function () {

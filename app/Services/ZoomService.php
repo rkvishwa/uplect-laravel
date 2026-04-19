@@ -4,30 +4,50 @@ namespace App\Services;
 
 use App\Models\CourseSession;
 use App\Models\User;
+use App\Models\ZoomAccount;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class ZoomService
 {
+    protected ?ZoomAccount $account = null;
+
+    public function forAccount(ZoomAccount $account): self
+    {
+        $instance = clone $this;
+        $instance->account = $account;
+
+        return $instance;
+    }
+
     protected function tokenCacheKey(): string
     {
-        return 'zoom.access_token.'.md5((string) config('zoom.account_id'));
+        if ($this->account === null) {
+            throw new \RuntimeException('No Zoom account selected.');
+        }
+
+        return 'zoom.access_token.'.$this->account->id;
     }
 
     public function getAccessToken(): string
     {
+        if ($this->account === null) {
+            throw new \RuntimeException('No Zoom account selected.');
+        }
+
         $cached = Cache::get($this->tokenCacheKey());
         if (is_string($cached) && $cached !== '') {
             return $cached;
         }
 
-        $accountId = config('zoom.account_id');
-        $clientId = config('zoom.client_id');
-        $clientSecret = config('zoom.client_secret');
+        $accountId = $this->account->account_id;
+        $clientId = $this->account->client_id;
+        $clientSecret = $this->account->client_secret;
 
-        if (! $accountId || ! $clientId || ! $clientSecret) {
-            throw new \RuntimeException('Zoom API credentials are not configured.');
+        if ($accountId === '' || $clientId === '' || $clientSecret === '') {
+            throw new \RuntimeException('Zoom API credentials are not configured for this account.');
         }
 
         $response = Http::asForm()
@@ -38,7 +58,7 @@ class ZoomService
             ]);
 
         if (! $response->successful()) {
-            Log::warning('Zoom OAuth failed', ['body' => $response->body()]);
+            Log::warning('Zoom OAuth failed', ['body' => $response->body(), 'zoom_account_id' => $this->account->id]);
             throw new \RuntimeException('Could not authenticate with Zoom.');
         }
 
@@ -59,21 +79,25 @@ class ZoomService
      */
     public function createMeeting(CourseSession $session, string $scheduledDate, string $startTime, string $endTime, ?string $alternativeHostEmail): array
     {
-        $hostUserId = config('zoom.host_user_id');
-        if (! $hostUserId) {
-            throw new \RuntimeException('ZOOM_HOST_USER_ID is not set.');
+        if ($this->account === null) {
+            throw new \RuntimeException('No Zoom account selected.');
         }
 
-        $timezone = (string) config('zoom.timezone', 'Asia/Colombo');
-        $startLocal = \Carbon\Carbon::parse($scheduledDate.' '.$startTime, $timezone);
-        $endLocal = \Carbon\Carbon::parse($scheduledDate.' '.$endTime, $timezone);
+        $hostUserId = $this->account->host_user_id;
+        if ($hostUserId === '' || $hostUserId === null) {
+            throw new \RuntimeException('Zoom host user is not set for this account.');
+        }
+
+        $timezone = (string) ($this->account->timezone ?: 'Asia/Colombo');
+        $startLocal = Carbon::parse($scheduledDate.' '.$startTime, $timezone);
+        $endLocal = Carbon::parse($scheduledDate.' '.$endTime, $timezone);
         $duration = max(1, $startLocal->diffInMinutes($endLocal));
         $startUtc = $startLocal->clone()->utc()->format('Y-m-d\TH:i:s\Z');
 
         $settings = [
             'approval_type' => 0,
             'registration_type' => 1,
-            'waiting_room' => (bool) config('zoom.waiting_room', true),
+            'waiting_room' => (bool) $this->account->waiting_room,
         ];
         if ($alternativeHostEmail) {
             $settings['alternative_hosts'] = $alternativeHostEmail;
@@ -93,7 +117,7 @@ class ZoomService
             ->post('https://api.zoom.us/v2/users/'.urlencode((string) $hostUserId).'/meetings', $payload);
 
         if (! $response->successful()) {
-            Log::warning('Zoom create meeting failed', ['body' => $response->body()]);
+            Log::warning('Zoom create meeting failed', ['body' => $response->body(), 'zoom_account_id' => $this->account->id]);
             throw new \RuntimeException('Zoom could not create the meeting.');
         }
 
@@ -114,18 +138,26 @@ class ZoomService
      */
     public function updateMeeting(string $zoomMeetingId, array $patch): void
     {
+        if ($this->account === null) {
+            throw new \RuntimeException('No Zoom account selected.');
+        }
+
         $response = Http::withToken($this->getAccessToken())
             ->acceptJson()
             ->patch('https://api.zoom.us/v2/meetings/'.urlencode($zoomMeetingId), $patch);
 
         if (! $response->successful()) {
-            Log::warning('Zoom update meeting failed', ['body' => $response->body()]);
+            Log::warning('Zoom update meeting failed', ['body' => $response->body(), 'zoom_account_id' => $this->account->id]);
             throw new \RuntimeException('Zoom could not update the meeting.');
         }
     }
 
     public function deleteMeeting(string $zoomMeetingId): void
     {
+        if ($this->account === null) {
+            throw new \RuntimeException('No Zoom account selected.');
+        }
+
         $response = Http::withToken($this->getAccessToken())
             ->delete('https://api.zoom.us/v2/meetings/'.urlencode($zoomMeetingId));
 
@@ -134,7 +166,7 @@ class ZoomService
         }
 
         if (! $response->successful()) {
-            Log::warning('Zoom delete meeting failed', ['body' => $response->body()]);
+            Log::warning('Zoom delete meeting failed', ['body' => $response->body(), 'zoom_account_id' => $this->account->id]);
             throw new \RuntimeException('Zoom could not delete the meeting.');
         }
     }
@@ -144,6 +176,10 @@ class ZoomService
      */
     public function addRegistrant(string $zoomMeetingId, User $student): array
     {
+        if ($this->account === null) {
+            throw new \RuntimeException('No Zoom account selected.');
+        }
+
         $response = Http::withToken($this->getAccessToken())
             ->acceptJson()
             ->post('https://api.zoom.us/v2/meetings/'.urlencode($zoomMeetingId).'/registrants', [
@@ -154,7 +190,7 @@ class ZoomService
             ]);
 
         if (! $response->successful()) {
-            Log::warning('Zoom add registrant failed', ['body' => $response->body()]);
+            Log::warning('Zoom add registrant failed', ['body' => $response->body(), 'zoom_account_id' => $this->account->id]);
             throw new \RuntimeException('Zoom could not register the attendee.');
         }
 

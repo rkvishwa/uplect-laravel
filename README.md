@@ -45,10 +45,11 @@ Boost provides your agent 15+ tools and skills that help agents build Laravel ap
 
 - Run migrations: `php artisan migrate`
 - Public files (course images, certificates): `php artisan storage:link`
-- Configure **PayHere** and **Zoom** keys in `.env` (see `.env.example`)
+- Configure **PayHere** keys in `.env` (see `.env.example`)
 - Student checkout uses **PayHere JavaScript SDK** (`payhere.js` popup); the **hash** is generated server-side only (`PayHereService::checkoutHash`)
 - PayHere **notify** URL must be reachable by PayHere servers; CSRF is disabled for `POST /payment/payhere/notify`
-- Zoom meetings require `ZOOM_HOST_USER_ID` (Zoom user id that owns/host meetings on your account)
+- **Zoom**: add one or more Zoom accounts under **Admin → Settings → Zoom** (Server-to-Server OAuth credentials + host user ID or email). When creating a session Zoom link on the course timeline, pick which account to use (default is pre-selected).
+- **Payments**: pending bank transfers and payment review live under **Admin → Payments** (`/admin/payments`).
 - Optional demo data: `php artisan db:seed --class=Phase2DemoSeeder` or set `SEED_DEMO_DATA=true` before `db:seed`
 
 ## Contributing

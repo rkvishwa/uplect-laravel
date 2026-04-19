@@ -50,7 +50,7 @@ function initCharts() {
                 labels: t.labels,
                 datasets: [
                     {
-                        label: data.strings?.newEnrollments ?? 'Enrollments',
+                        label: data.strings?.newPayments ?? data.strings?.newEnrollments ?? 'Payments',
                         data: t.values,
                         borderColor: 'rgb(79, 70, 229)',
                         backgroundColor: 'rgba(79, 70, 229, 0.08)',

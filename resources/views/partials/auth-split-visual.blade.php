@@ -3,68 +3,6 @@
     <div class="relative h-full w-full overflow-hidden rounded-[32px]"
          style="background: linear-gradient(180deg, #EAF0FB 0%, #DCE4F6 45%, #C7D4F0 100%);">
 
-        {{-- Total Revenue card (top-left) --}}
-        <div class="absolute left-8 top-8 z-20 w-[300px] rounded-2xl border border-white/70 p-5 shadow-[0_8px_32px_rgba(31,38,135,0.08)] xl:left-12 xl:top-12"
-             style="background: rgba(255,255,255,0.55); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
-            <p class="mb-1 text-[14px] font-medium text-zinc-700">{{ __('Total revenue') }}</p>
-            <div class="mb-5 flex items-baseline gap-2">
-                <h3 class="text-[26px] font-bold text-zinc-900">$354,320</h3>
-                <span class="inline-flex items-center gap-0.5 text-[12px] font-semibold text-emerald-600">
-                    <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3l7 7H3l7-7z"/></svg>
-                    2.5%
-                </span>
-            </div>
-
-            <div class="flex items-center gap-6">
-                <svg width="110" height="110" viewBox="0 0 100 100" aria-hidden="true">
-                    <path d="M 50 50 L 50 0 A 50 50 0 0 1 95 30 Z" fill="#BFD4F2"/>
-                    <path d="M 50 50 L 95 30 A 50 50 0 0 1 50 100 Z" fill="#5B7FE8"/>
-                    <path d="M 50 50 L 50 100 A 50 50 0 0 1 10 78 Z" fill="#A8C0EC"/>
-                    <path d="M 50 50 L 10 78 A 50 50 0 0 1 50 0 Z" fill="#0F172A"/>
-                </svg>
-
-                <div class="space-y-2 text-[13px] font-medium text-zinc-700">
-                    <div class="flex items-center gap-2"><span class="inline-block" style="width:7px;height:7px;border-radius:9999px;background:#BFD4F2"></span>{{ __('May') }}</div>
-                    <div class="flex items-center gap-2"><span class="inline-block" style="width:7px;height:7px;border-radius:9999px;background:#5B7FE8"></span>{{ __('June') }}</div>
-                    <div class="flex items-center gap-2"><span class="inline-block" style="width:7px;height:7px;border-radius:9999px;background:#A8C0EC"></span>{{ __('July') }}</div>
-                    <div class="flex items-center gap-2"><span class="inline-block" style="width:7px;height:7px;border-radius:9999px;background:#0F172A"></span>{{ __('August') }}</div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Notification cards (top-right) --}}
-        <div class="absolute right-8 top-8 z-20 w-[250px] space-y-2.5 xl:right-12 xl:top-12">
-            <div class="flex items-center gap-3 rounded-xl border border-white/80 p-2.5 shadow-[0_4px_16px_rgba(31,38,135,0.06)]"
-                 style="background: rgba(255,255,255,0.78); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
-                <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-white shadow-inner"
-                      style="background: linear-gradient(135deg, #F472B6 0%, #BE185D 100%);"
-                      aria-label="Anna Peterson">AP</span>
-                <div class="min-w-0 flex-1">
-                    <p class="truncate text-[12px] font-bold leading-tight text-zinc-900">{{ __('Anna Peterson') }}</p>
-                    <p class="mt-0.5 flex items-center gap-1 truncate text-[10px] text-zinc-500">
-                        <svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor" style="flex-shrink:0;color:#a1a1aa">
-                            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.84 8.84 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="truncate">{{ __('Sent a message to') }} <span class="font-semibold text-zinc-700">{{ __('UXTank Inc.') }}</span></span>
-                    </p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3 rounded-xl border border-white/80 p-2.5 shadow-[0_4px_16px_rgba(31,38,135,0.06)]"
-                 style="background: rgba(255,255,255,0.78); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
-                <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[12px] font-bold text-white shadow-inner"
-                      style="background: linear-gradient(135deg, #60A5FA 0%, #1E40AF 100%);"
-                      aria-label="Chris Meadow">CM</span>
-                <div class="min-w-0 flex-1">
-                    <p class="truncate text-[12px] font-bold leading-tight text-zinc-900">{{ __('Chris Meadow') }}</p>
-                    <p class="mt-0.5 flex items-center gap-1 truncate text-[10px] text-zinc-500">
-                        <svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor" style="flex-shrink:0;color:#3b82f6">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="truncate">{{ __('Accepted a new project') }} <span class="font-semibold text-zinc-700">{{ __('Cascade') }}</span></span>
-                    </p>
-                </div>
-            </div>
-        </div>
 
         {{-- 3D blue glass blocks (bottom) --}}
         <div class="absolute bottom-0 left-0 right-0" style="height:62%;overflow:hidden;">

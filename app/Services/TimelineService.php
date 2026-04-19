@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\CourseAssignment;
 use App\Models\CourseCertificate;
 use App\Models\CourseSession;
+use App\Models\Enrollment;
 use App\Models\TimelineItem;
 use App\Models\User;
 use Carbon\Carbon;
@@ -116,12 +117,13 @@ class TimelineService
             'description' => $description,
         ]);
 
-        if ($session->zoomMeeting) {
+        $zm = $session->zoomMeeting;
+        if ($zm && ($account = $zm->zoomAccount)) {
             try {
-                $this->zoomService->updateMeeting($session->zoomMeeting->zoom_meeting_id, [
+                $this->zoomService->forAccount($account)->updateMeeting($zm->zoom_meeting_id, [
                     'topic' => $title,
                 ]);
-                $session->zoomMeeting->update(['topic' => $title]);
+                $zm->update(['topic' => $title]);
             } catch (\Throwable) {
                 // non-fatal: Zoom sync optional if meeting missing
             }
@@ -146,15 +148,16 @@ class TimelineService
         ]);
 
         $session = $item->cardable;
-        if ($session instanceof CourseSession && $session->zoomMeeting) {
-            $timezone = config('zoom.timezone', 'Asia/Colombo');
+        $zm = $session instanceof CourseSession ? $session->zoomMeeting : null;
+        if ($zm && ($account = $zm->zoomAccount)) {
+            $timezone = (string) ($account->timezone ?: 'Asia/Colombo');
             $startAt = Carbon::parse($date.' '.$startTime, $timezone)->utc();
             $duration = max(1, $start->diffInMinutes($end));
-            $this->zoomService->updateMeeting($session->zoomMeeting->zoom_meeting_id, [
+            $this->zoomService->forAccount($account)->updateMeeting($zm->zoom_meeting_id, [
                 'start_time' => $startAt->format('Y-m-d\TH:i:s\Z'),
                 'duration' => $duration,
             ]);
-            $session->zoomMeeting->update([
+            $zm->update([
                 'start_at' => $startAt,
                 'duration_minutes' => $duration,
             ]);
@@ -172,10 +175,13 @@ class TimelineService
         if ($cardable instanceof CourseSession) {
             $zm = $cardable->zoomMeeting;
             if ($zm) {
-                try {
-                    $this->zoomService->deleteMeeting($zm->zoom_meeting_id);
-                } catch (\Throwable) {
-                    // ignore
+                $account = $zm->zoomAccount;
+                if ($account) {
+                    try {
+                        $this->zoomService->forAccount($account)->deleteMeeting($zm->zoom_meeting_id);
+                    } catch (\Throwable) {
+                        // ignore
+                    }
                 }
                 $zm->delete();
             }
@@ -229,7 +235,7 @@ class TimelineService
         } elseif ($user->isStudent()) {
             $q->whereHas('course.enrollments', function (Builder $b) use ($user) {
                 $b->where('student_id', $user->id)
-                    ->where('status', \App\Models\Enrollment::STATUS_ACTIVE);
+                    ->where('status', Enrollment::STATUS_ACTIVE);
             });
         } else {
             return collect();

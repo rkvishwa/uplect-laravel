@@ -74,7 +74,7 @@ class Phase2DemoSeeder extends Seeder
                     'scheduled_start_time' => '09:00',
                     'scheduled_end_time' => '10:30',
                     'title' => 'Session '.($d + 1),
-                    'description' => "Topics for session ".($d + 1).'.',
+                    'description' => 'Topics for session '.($d + 1).'.',
                     'resource_link' => null,
                     'is_makeup' => false,
                 ]);
@@ -156,7 +156,6 @@ class Phase2DemoSeeder extends Seeder
             'amount_lkr' => $primaryCourse->student_total_fee_lkr,
             'submitted_at' => now(),
             'status' => Enrollment::STATUS_DECLINED,
-            'decline_reason' => 'Demo decline: incomplete slip.',
             'reviewed_at' => now(),
         ]);
 

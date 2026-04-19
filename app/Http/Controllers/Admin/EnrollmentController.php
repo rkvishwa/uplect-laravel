@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\DeclineEnrollmentRequest;
 use App\Models\Enrollment;
 use App\Services\EnrollmentService;
 use Illuminate\Http\RedirectResponse;
@@ -28,7 +27,7 @@ class EnrollmentController extends Controller
 
         $enrollments = $q->paginate(20)->withQueryString();
 
-        return view('admin.enrollments.index', compact('enrollments'));
+        return view('admin.payments.index', compact('enrollments'));
     }
 
     public function approve(Enrollment $enrollment, EnrollmentService $service): RedirectResponse
@@ -44,7 +43,7 @@ class EnrollmentController extends Controller
         return back()->with('status', __('Enrollment approved.'));
     }
 
-    public function decline(DeclineEnrollmentRequest $request, Enrollment $enrollment, EnrollmentService $service): RedirectResponse
+    public function decline(Enrollment $enrollment, EnrollmentService $service): RedirectResponse
     {
         $this->authorize('approve', $enrollment);
 
@@ -52,9 +51,9 @@ class EnrollmentController extends Controller
             return back()->with('warning', __('Only pending enrollments can be declined.'));
         }
 
-        $service->decline($enrollment, $request->user(), $request->validated('decline_reason'));
+        $service->decline($enrollment, request()->user());
 
-        return back()->with('status', __('Enrollment declined.'));
+        return back()->with('status', __('Payment declined.'));
     }
 
     public function downloadSlip(Enrollment $enrollment): StreamedResponse|RedirectResponse

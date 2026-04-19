@@ -60,8 +60,8 @@ class DashboardController extends Controller
         }
 
         $chartStrings = [
-            'newEnrollments' => __('New enrollments'),
-            'enrollmentsByStatus' => __('Enrollments by status'),
+            'newPayments' => __('New payments'),
+            'paymentsByStatus' => __('Payments by status'),
             'coursesPerCategory' => __('Courses per category'),
             'courses' => __('Courses'),
         ];

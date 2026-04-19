@@ -13,6 +13,7 @@ class ZoomMeeting extends Model
 
     protected $fillable = [
         'course_session_id',
+        'zoom_account_id',
         'zoom_meeting_id',
         'topic',
         'start_at',
@@ -35,6 +36,11 @@ class ZoomMeeting extends Model
     public function courseSession(): BelongsTo
     {
         return $this->belongsTo(CourseSession::class, 'course_session_id');
+    }
+
+    public function zoomAccount(): BelongsTo
+    {
+        return $this->belongsTo(ZoomAccount::class, 'zoom_account_id');
     }
 
     public function creator(): BelongsTo

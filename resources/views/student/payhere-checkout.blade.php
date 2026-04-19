@@ -51,7 +51,11 @@
                 };
 
                 payhere.onError = function onError(error) {
-                    alert(error);
+                    window.showAppAlert({
+                        title: @json(__('Payment error')),
+                        message: String(error),
+                        okLabel: @json(__('OK')),
+                    });
                 };
 
                 document.addEventListener('DOMContentLoaded', function () {

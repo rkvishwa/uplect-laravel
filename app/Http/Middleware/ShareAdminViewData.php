@@ -14,7 +14,7 @@ class ShareAdminViewData
     {
         if ($request->user()?->isAdmin()) {
             View::share(
-                'pendingEnrollmentsCount',
+                'pendingPaymentsCount',
                 Enrollment::query()->where('status', Enrollment::STATUS_PENDING)->count()
             );
         }

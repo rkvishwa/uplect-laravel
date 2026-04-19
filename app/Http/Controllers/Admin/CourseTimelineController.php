@@ -7,7 +7,9 @@ use App\Http\Requests\Admin\StoreTimelineCardRequest;
 use App\Models\Course;
 use App\Models\CourseSession;
 use App\Models\TimelineItem;
+use App\Models\ZoomAccount;
 use App\Services\TimelineService;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -20,9 +22,9 @@ class CourseTimelineController extends Controller
         $grouped = TimelineItem::query()
             ->where('course_id', $course->id)
             ->with([
-                'cardable' => function (\Illuminate\Database\Eloquent\Relations\MorphTo $morphTo) {
+                'cardable' => function (MorphTo $morphTo) {
                     $morphTo->morphWith([
-                        CourseSession::class => ['zoomMeeting'],
+                        CourseSession::class => ['zoomMeeting.zoomAccount'],
                     ]);
                 },
             ])
@@ -31,7 +33,13 @@ class CourseTimelineController extends Controller
             ->get()
             ->groupBy(fn (TimelineItem $i) => $i->scheduled_date->format('Y-m-d'));
 
-        return view('admin.courses.timeline', compact('course', 'grouped'));
+        $zoomAccounts = ZoomAccount::query()
+            ->active()
+            ->orderByDesc('is_default')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.courses.timeline', compact('course', 'grouped', 'zoomAccounts'));
     }
 
     public function store(StoreTimelineCardRequest $request, Course $course, TimelineService $timeline): RedirectResponse

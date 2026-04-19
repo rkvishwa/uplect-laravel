@@ -1,12 +1,12 @@
-<x-layouts.app :header="__('Enrollments')" :title="__('Enrollments')">
+<x-layouts.app :header="__('Payments')" :title="__('Payments')">
     <x-slot:sidebarNav>
-        <x-admin.sidebar active="enrollments" />
+        <x-admin.sidebar active="payments" />
     </x-slot:sidebarNav>
 
     <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">{{ __('Enrollments') }}</h1>
-            <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ __('Review and manage student course enrollments.') }}</p>
+            <h1 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">{{ __('Payments') }}</h1>
+            <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{{ __('Review bank slips and payment-backed course access requests.') }}</p>
         </div>
     </div>
 
@@ -15,8 +15,8 @@
         @php
             $currentStatus = request('status', \App\Models\Enrollment::STATUS_PENDING);
         @endphp
-        
-        <a href="{{ route('admin.enrollments.index', ['status' => \App\Models\Enrollment::STATUS_PENDING]) }}" 
+
+        <a href="{{ route('admin.payments.index', ['status' => \App\Models\Enrollment::STATUS_PENDING]) }}"
             @class([
                 'inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors',
                 'bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900' => $currentStatus === \App\Models\Enrollment::STATUS_PENDING,
@@ -27,8 +27,8 @@
                 <span class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-[10px] text-white dark:bg-zinc-900/20 dark:text-zinc-900">{{ $enrollments->total() }}</span>
             @endif
         </a>
-        
-        <a href="{{ route('admin.enrollments.index', ['status' => \App\Models\Enrollment::STATUS_ACTIVE]) }}" 
+
+        <a href="{{ route('admin.payments.index', ['status' => \App\Models\Enrollment::STATUS_ACTIVE]) }}"
             @class([
                 'inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors',
                 'bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900' => $currentStatus === \App\Models\Enrollment::STATUS_ACTIVE,
@@ -36,8 +36,8 @@
             ])>
             {{ __('Active') }}
         </a>
-        
-        <a href="{{ route('admin.enrollments.index', ['status' => \App\Models\Enrollment::STATUS_DECLINED]) }}" 
+
+        <a href="{{ route('admin.payments.index', ['status' => \App\Models\Enrollment::STATUS_DECLINED]) }}"
             @class([
                 'inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors',
                 'bg-zinc-900 text-white shadow-sm dark:bg-white dark:text-zinc-900' => $currentStatus === \App\Models\Enrollment::STATUS_DECLINED,
@@ -69,7 +69,7 @@
                                         {{ substr($e->student->name, 0, 1) }}
                                     </div>
                                     <div>
-                                        <p class="font-medium text-zinc-900 dark:text-锌-100">{{ $e->student->name }}</p>
+                                        <p class="font-medium text-zinc-900 dark:text-zinc-100">{{ $e->student->name }}</p>
                                         <p class="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{{ $e->student->email }}</p>
                                     </div>
                                 </div>
@@ -115,51 +115,35 @@
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     @if ($e->payment_method === \App\Models\Enrollment::PAYMENT_BANK_TRANSFER && $e->bank_slip_path)
-                                        <a href="{{ route('admin.enrollments.slip', $e) }}" target="_blank" class="rounded-lg px-3 py-1.5 text-xs font-semibold text-brand-700 transition hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-brand-500/10">
+                                        <a href="{{ route('admin.payments.slip', $e) }}" target="_blank" class="rounded-lg px-3 py-1.5 text-xs font-semibold text-brand-700 transition hover:bg-brand-50 dark:text-brand-400 dark:hover:bg-brand-500/10">
                                             {{ __('View Slip') }} &nearr;
                                         </a>
                                     @endif
-                                    
+
                                     @if ($e->status === \App\Models\Enrollment::STATUS_PENDING)
                                         <div class="flex items-center gap-1 border-l border-zinc-200 pl-2 dark:border-zinc-700">
-                                            <form method="POST" action="{{ route('admin.enrollments.approve', $e) }}">
+                                            <form method="POST" action="{{ route('admin.payments.approve', $e) }}">
                                                 @csrf
                                                 <button type="submit" x-data x-on:click.prevent="$el.closest('form').submit()" class="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/20">
                                                     {{ __('Approve') }}
                                                 </button>
                                             </form>
-                                            
-                                            <!-- Alpine component for decline dropdown/modal -->
-                                            <div x-data="{ open: false }" class="relative">
-                                                <button @click="open = !open" type="button" class="rounded-lg px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10">
+
+                                            <form
+                                                method="POST"
+                                                action="{{ route('admin.payments.decline', $e) }}"
+                                                data-confirm="{{ __('Decline this payment request?') }}"
+                                                data-confirm-ok="{{ __('Decline') }}"
+                                                data-confirm-cancel="{{ __('Cancel') }}"
+                                            >
+                                                @csrf
+                                                <button type="submit" class="rounded-lg px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10">
                                                     {{ __('Decline') }}
                                                 </button>
-                                                
-                                                <div x-cloak x-show="open" @click.away="open = false" 
-                                                     class="absolute right-0 top-full z-10 mt-2 w-64 rounded-xl border border-zinc-200/80 bg-white p-3 shadow-xl dark:border-zinc-700 dark:bg-zinc-800">
-                                                    <form method="POST" action="{{ route('admin.enrollments.decline', $e) }}">
-                                                        @csrf
-                                                        <label class="block text-left text-xs font-medium text-zinc-900 dark:text-zinc-200">{{ __('Reason for decline') }}</label>
-                                                        <textarea name="decline_reason" rows="2" required 
-                                                                class="mt-1 block w-full rounded-lg border-zinc-300 text-sm focus:border-red-500 focus:ring-red-500 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white dark:focus:border-red-500 dark:focus:ring-red-500" 
-                                                                placeholder="{{ __('e.g., Invalid receipt') }}"></textarea>
-                                                        <div class="mt-2 flex justify-end gap-2">
-                                                            <button type="button" @click="open = false" class="rounded-lg px-2 py-1 text-xs font-medium text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">{{ __('Cancel') }}</button>
-                                                            <button type="submit" class="rounded-lg bg-red-600 px-3 py-1 text-xs font-medium text-white hover:bg-red-700">{{ __('Confirm Decline') }}</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
+                                            </form>
                                         </div>
                                     @endif
                                 </div>
-                                
-                                @if ($e->status === \App\Models\Enrollment::STATUS_DECLINED && $e->decline_reason)
-                                    <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400" title="{{ $e->decline_reason }}">
-                                        <span class="font-medium text-red-600 dark:text-red-400">{{ __('Reason:') }}</span> 
-                                        {{ \Illuminate\Support\Str::limit($e->decline_reason, 20) }}
-                                    </p>
-                                @endif
                             </td>
                         </tr>
                     @empty
@@ -169,8 +153,8 @@
                                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
                                         <svg class="h-6 w-6 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
                                     </div>
-                                    <p class="mt-4 font-medium text-zinc-900 dark:text-zinc-100">{{ __('No enrollments found') }}</p>
-                                    <p class="mt-1 text-sm text-zinc-500">{{ __('There are no enrollments matching the current filter.') }}</p>
+                                    <p class="mt-4 font-medium text-zinc-900 dark:text-zinc-100">{{ __('No payments found') }}</p>
+                                    <p class="mt-1 text-sm text-zinc-500">{{ __('There are no records matching the current filter.') }}</p>
                                 </div>
                             </td>
                         </tr>
@@ -179,7 +163,7 @@
             </table>
         </div>
     </div>
-    
+
     <div class="mt-6">
         {{ $enrollments->links() }}
     </div>

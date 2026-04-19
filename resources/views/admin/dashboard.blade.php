@@ -4,7 +4,7 @@
 
 <x-layouts.app :header="__('Admin')" :title="__('Dashboard')">
     <x-slot:sidebarNav>
-        <x-admin.sidebar active="dashboard" pendingEnrollmentsCount="{{ $pending }}" />
+        <x-admin.sidebar active="dashboard" pendingPaymentsCount="{{ $pending }}" />
     </x-slot:sidebarNav>
 
     <div class="space-y-6 lg:space-y-8">
@@ -27,7 +27,7 @@
                         {{ __('Welcome back, :name', ['name' => auth()->user()->name]) }}
                     </h2>
                     <p class="mt-3 max-w-2xl text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400">
-                        {{ __('Manage categories, courses, enrollments, and lecturers from one central command center. Stay on top of your platform\'s activity today.') }}
+                        {{ __('Manage categories, courses, payments, and lecturers from one central command center. Stay on top of your platform\'s activity today.') }}
                     </p>
                 </div>
                 <div class="mt-8 shrink-0 lg:mt-0 lg:pl-10">
@@ -37,7 +37,7 @@
                             {{ __('New Course') }}
                         </a>
                         @if($pending > 0)
-                        <a href="{{ route('admin.enrollments.index', ['status' => 'pending']) }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-100 px-5 py-2.5 text-sm font-semibold text-amber-800 shadow-sm transition hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:hover:bg-amber-500/30">
+                        <a href="{{ route('admin.payments.index', ['status' => 'pending']) }}" class="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-100 px-5 py-2.5 text-sm font-semibold text-amber-800 shadow-sm transition hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:hover:bg-amber-500/30">
                             {{ __('Review Pending') }}
                             <span class="flex h-5 w-5 items-center justify-center rounded-full bg-amber-800/20 text-[10px] font-bold text-amber-900 dark:text-amber-200">{{ $pending }}</span>
                         </a>
@@ -116,8 +116,8 @@
             <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-zinc-200/50 dark:bg-zinc-900/50 dark:ring-zinc-800 lg:col-span-2">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">{{ __('Enrollment Activity') }}</h3>
-                        <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{{ __('New enrollments over the past six months.') }}</p>
+                        <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">{{ __('Payment activity') }}</h3>
+                        <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{{ __('New payment records over the past six months.') }}</p>
                     </div>
                 </div>
                 <div class="mt-8 h-64 w-full min-w-0">
@@ -126,7 +126,7 @@
             </div>
 
             <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-zinc-200/50 dark:bg-zinc-900/50 dark:ring-zinc-800">
-                <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">{{ __('Enrollment Status') }}</h3>
+                <h3 class="font-semibold text-zinc-900 dark:text-zinc-100">{{ __('Payment status') }}</h3>
                 <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{{ __('Overall breakdown') }}</p>
                 <div class="mt-8 flex h-64 w-full items-center justify-center min-w-0">
                     <canvas id="chart-enrollment-status" class="mx-auto max-h-64 max-w-full"></canvas>
