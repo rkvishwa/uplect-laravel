@@ -33,5 +33,11 @@ class AppServiceProvider extends ServiceProvider
 
             return Limit::perMinute(1)->by(strtolower($email).'|'.$request->ip());
         });
+
+        RateLimiter::for('zoom-join', function (Request $request) {
+            $user = $request->user();
+
+            return Limit::perMinute(30)->by($user?->id.'|'.$request->ip());
+        });
     }
 }

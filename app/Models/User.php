@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPasswordMail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'role'])]
 #[Hidden(['password', 'remember_token'])]
@@ -58,5 +59,30 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
     {
         Mail::to($this->email)->send(new ResetPasswordMail($this, $token));
+    }
+
+    public function coursesAsLecturer(): HasMany
+    {
+        return $this->hasMany(Course::class, 'lecturer_id');
+    }
+
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class, 'student_id');
+    }
+
+    public function assignmentSubmissions(): HasMany
+    {
+        return $this->hasMany(AssignmentSubmission::class, 'student_id');
+    }
+
+    public function issuedCertificates(): HasMany
+    {
+        return $this->hasMany(IssuedCertificate::class, 'student_id');
+    }
+
+    public function zoomRegistrants(): HasMany
+    {
+        return $this->hasMany(ZoomMeetingRegistrant::class, 'student_id');
     }
 }

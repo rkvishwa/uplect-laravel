@@ -41,6 +41,16 @@ php artisan boost:install
 
 Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
 
+## Uplect (Phase 2)
+
+- Run migrations: `php artisan migrate`
+- Public files (course images, certificates): `php artisan storage:link`
+- Configure **PayHere** and **Zoom** keys in `.env` (see `.env.example`)
+- Student checkout uses **PayHere JavaScript SDK** (`payhere.js` popup); the **hash** is generated server-side only (`PayHereService::checkoutHash`)
+- PayHere **notify** URL must be reachable by PayHere servers; CSRF is disabled for `POST /payment/payhere/notify`
+- Zoom meetings require `ZOOM_HOST_USER_ID` (Zoom user id that owns/host meetings on your account)
+- Optional demo data: `php artisan db:seed --class=Phase2DemoSeeder` or set `SEED_DEMO_DATA=true` before `db:seed`
+
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).

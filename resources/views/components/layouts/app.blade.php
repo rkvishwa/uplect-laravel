@@ -66,5 +66,8 @@
             </main>
         </div>
     </div>
+    @isset($scripts)
+        {!! $scripts !!}
+    @endisset
 </body>
 </html>

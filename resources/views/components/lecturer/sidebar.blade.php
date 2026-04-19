@@ -1,0 +1,5 @@
+@props(['active' => ''])
+
+<a href="{{ route('lecturer.dashboard') }}" @class(['rounded-lg px-3 py-2 transition', 'bg-brand-50 font-semibold text-brand-800 dark:bg-brand-950/40 dark:text-brand-200' => $active === 'dashboard', 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800' => $active !== 'dashboard'])>{{ __('Dashboard') }}</a>
+<a href="{{ route('lecturer.timeline.index') }}" @class(['rounded-lg px-3 py-2 transition', 'bg-brand-50 font-semibold text-brand-800 dark:bg-brand-950/40 dark:text-brand-200' => $active === 'timeline', 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800' => $active !== 'timeline'])>{{ __('Timeline') }}</a>
+<a href="{{ route('lecturer.courses.index') }}" @class(['rounded-lg px-3 py-2 transition', 'bg-brand-50 font-semibold text-brand-800 dark:bg-brand-950/40 dark:text-brand-200' => $active === 'courses', 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800' => $active !== 'courses'])>{{ __('My courses') }}</a>
