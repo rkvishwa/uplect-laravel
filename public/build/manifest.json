@@ -1,0 +1,23 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-BBa2Fs2H.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/admin-dashboard.js": {
+    "file": "assets/admin-dashboard-C_lJ9_gQ.js",
+    "name": "admin-dashboard",
+    "src": "resources/js/admin-dashboard.js",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-CiyNaKhe.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}
